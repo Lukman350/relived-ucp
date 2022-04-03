@@ -2,11 +2,10 @@ import Layout from "@/components/Layout";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { API_HOST, PUBLIC_URL, isTokenValid } from "@/components/Utils";
 import Toast from "@/components/Toast";
 import callAPI from "@/config/api";
-import Cookies from "js-cookie";
 
 export default function ResetPassword() {
   const [password, setPassword] = useState("");
@@ -14,14 +13,6 @@ export default function ResetPassword() {
 
   const router = useRouter();
   let params = router.query.params || [];
-
-  useEffect(() => {
-    (async () => {
-      if (isTokenValid(Cookies.get("token"))) {
-        router.push("/dashboard");
-      }
-    })();
-  }, [router]);
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
@@ -181,15 +172,29 @@ export default function ResetPassword() {
   );
 }
 
-// export async function getServerSideProps({ params }) {
-//   const { slug } = params;
+interface GetServerSideProps {
+  req: {
+    cookies: {
+      token: string;
+    };
+  };
+}
 
-//   console.log(slug);
+export async function getServerSideProps({ req }: GetServerSideProps) {
+  const { token } = req.cookies;
 
-//   return {
-//     props: {
-//       ucpID: slug.ucpID,
-//       token: slug.token,
-//     },
-//   };
-// }
+  if (isTokenValid(token)) {
+    return {
+      props: {
+        redirect: {
+          destination: "/dashboard",
+          permanent: false,
+        },
+      },
+    };
+  }
+
+  return {
+    props: {},
+  };
+}

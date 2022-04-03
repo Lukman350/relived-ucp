@@ -7,6 +7,7 @@ import {
   API_HOST,
   isValidEmail,
   setDisabled,
+  isTokenValid,
 } from "@/components/Utils";
 import callAPI from "@/config/api";
 import Toast from "@/components/Toast";
@@ -287,4 +288,31 @@ export default function Forgot() {
       </section>
     </Layout>
   );
+}
+
+interface GetServerSideProps {
+  req: {
+    cookies: {
+      token: string;
+    };
+  };
+}
+
+export async function getServerSideProps({ req }: GetServerSideProps) {
+  const { token } = req.cookies;
+
+  if (isTokenValid(token)) {
+    return {
+      props: {
+        redirect: {
+          destination: "/dashboard",
+          permanent: false,
+        },
+      },
+    };
+  }
+
+  return {
+    props: {},
+  };
 }

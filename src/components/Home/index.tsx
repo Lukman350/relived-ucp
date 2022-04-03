@@ -1,20 +1,12 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
 import { HomeProps } from "@/data-types";
-import Cookies from "js-cookie";
 import DisplayServer from "@/components/DisplayServer";
-import { isTokenValid, PUBLIC_URL } from "@/components/Utils";
+import { PUBLIC_URL } from "@/components/Utils";
 
 export default function Landing({ data }: HomeProps) {
   const router = useRouter();
-
-  useEffect(() => {
-    if (isTokenValid(Cookies.get("token"))) {
-      router.push("/dashboard/");
-    }
-  }, [router]);
 
   return (
     <>
