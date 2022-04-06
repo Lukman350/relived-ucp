@@ -392,7 +392,6 @@ export default function Navbar({ account }: NavbarProps) {
                     <hr className="dropdown-divider" />
                   </li>
                   <li>
-                    dr 2
                     <a
                       className="dropdown-item"
                       href="#"
