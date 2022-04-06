@@ -27,9 +27,11 @@ export const getUserAdmin = (token: string) => {
   return user.admin;
 };
 
-export const setLogout = async () => {
+export const setLogout = async (isMobile: boolean = false) => {
   Cookies.remove("token");
-  await Router.push("/login");
+  if (!isMobile) {
+    await Router.push("/login");
+  }
 };
 
 export const getAccount = (token: string) => {

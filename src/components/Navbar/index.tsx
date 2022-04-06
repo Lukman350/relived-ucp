@@ -104,13 +104,17 @@ export default function Navbar({ account }: NavbarProps) {
                         <a
                           className="nav-link"
                           style={{ color: "#e7e7e8" }}
-                          href="#"
-                          onClick={setLogout}
+                          href="/login"
+                          onClick={() => setLogout(true)}
                         >
                           Logout
                         </a>
                       ) : (
-                        <a className="nav-link" href="#" onClick={setLogout}>
+                        <a
+                          className="nav-link"
+                          href="/login"
+                          onClick={() => setLogout(true)}
+                        >
                           Logout
                         </a>
                       )}
@@ -235,8 +239,8 @@ export default function Navbar({ account }: NavbarProps) {
                       <li>
                         <a
                           className="dropdown-item"
-                          href="#"
-                          onClick={setLogout}
+                          href="/login"
+                          onClick={() => setLogout(true)}
                         >
                           Log out
                         </a>
@@ -259,12 +263,16 @@ export default function Navbar({ account }: NavbarProps) {
                     className="nav-link"
                     style={{ color: "#e7e7e8" }}
                     href="#"
-                    onClick={setLogout}
+                    onClick={() => setLogout(false)}
                   >
                     Logout
                   </a>
                 ) : (
-                  <a className="nav-link" href="#" onClick={setLogout}>
+                  <a
+                    className="nav-link"
+                    href="#"
+                    onClick={() => setLogout(false)}
+                  >
                     Logout
                   </a>
                 )}
@@ -384,7 +392,12 @@ export default function Navbar({ account }: NavbarProps) {
                     <hr className="dropdown-divider" />
                   </li>
                   <li>
-                    <a className="dropdown-item" href="#" onClick={setLogout}>
+                    dr 2
+                    <a
+                      className="dropdown-item"
+                      href="#"
+                      onClick={() => setLogout(false)}
+                    >
                       Log out
                     </a>
                   </li>
