@@ -9,6 +9,10 @@ import NavLink from "@/components/NavLink";
 export default function Navbar({ account }: NavbarProps) {
   const router = useRouter();
 
+  const isActive = (href: string) => {
+    return router.asPath === href;
+  };
+
   return (
     <section
       className="h-100 w-100"
@@ -93,9 +97,24 @@ export default function Navbar({ account }: NavbarProps) {
                     <NavLink href="/dashboard/donation" isMobile={true}>
                       Donation
                     </NavLink>
-                    <NavLink href="#" onClick={setLogout} isMobile={true}>
-                      Logout
-                    </NavLink>
+                    <li
+                      className={isActive("#") ? "nav-item active" : "nav-item"}
+                    >
+                      {isActive("#") ? (
+                        <a
+                          className="nav-link"
+                          style={{ color: "#e7e7e8" }}
+                          href="#"
+                          onClick={setLogout}
+                        >
+                          Logout
+                        </a>
+                      ) : (
+                        <a className="nav-link" href="#" onClick={setLogout}>
+                          Logout
+                        </a>
+                      )}
+                    </li>
                   </ul>
                 </div>
                 <div
@@ -234,9 +253,22 @@ export default function Navbar({ account }: NavbarProps) {
               <NavLink href="/dashboard/characters">My Characters</NavLink>
               <NavLink href="/dashboard/settings">Settings</NavLink>
               <NavLink href="/dashboard/donation">Donation</NavLink>
-              <NavLink href="#" onClick={setLogout}>
-                Logout
-              </NavLink>
+              <li className={isActive("#") ? "nav-item active" : "nav-item"}>
+                {isActive("#") ? (
+                  <a
+                    className="nav-link"
+                    style={{ color: "#e7e7e8" }}
+                    href="#"
+                    onClick={setLogout}
+                  >
+                    Logout
+                  </a>
+                ) : (
+                  <a className="nav-link" href="#" onClick={setLogout}>
+                    Logout
+                  </a>
+                )}
+              </li>
             </ul>
             <div className="gap-3">
               <div className="dropdown">
