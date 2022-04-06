@@ -17,7 +17,6 @@ function MyApp({ Component, pageProps }: AppProps) {
 
   useEffect(() => {
     AOS.init({
-      once: false,
       duration: 1500,
     });
 
