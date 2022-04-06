@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import Image from "next/image";
 import { PUBLIC_URL } from "../Utils";
 import { DisplayVehicleProps, VehicleDataTypes } from "@/data-types";
+import Skeleton from "react-loading-skeleton";
 
 export default function DisplayVehicle({ vehicle }: DisplayVehicleProps) {
   const router = useRouter();
@@ -31,8 +32,12 @@ export default function DisplayVehicle({ vehicle }: DisplayVehicleProps) {
         `}
       </style>
       {/* Left Column */}
-      <div className="left-column d-flex flex-lg-grow-1 flex-column text-lg-start align-items-center">
-        {vehicle !== undefined ? (
+      <div
+        className="left-column d-flex flex-lg-grow-1 flex-column text-lg-start align-items-center"
+        data-aos="zoom-in"
+        data-aos-once="true"
+      >
+        {vehicle.data !== null ? (
           vehicle.data.map((veh: VehicleDataTypes) => {
             return (
               <div key={veh.ID}>
@@ -59,13 +64,17 @@ export default function DisplayVehicle({ vehicle }: DisplayVehicleProps) {
       </div>
       {/* Right Column */}
       <div className="right-column d-flex flex-lg-grow-1 flex-column text-lg-start align-items-center">
-        <div className="responsive-table">
+        <div
+          className="responsive-table"
+          data-aos="zoom-in-up"
+          data-aos-once="true"
+        >
           <table
             className="table table-responsive text-white"
             style={{ backgroundColor: "#141432" }}
           >
             <tbody>
-              {vehicle !== undefined ? (
+              {vehicle.data !== null ? (
                 vehicle.data.map((veh: VehicleDataTypes) => {
                   const vehicleName = getVehicleName(veh.Model);
                   const getVehicleState = (v: VehicleDataTypes) => {
@@ -142,7 +151,9 @@ export default function DisplayVehicle({ vehicle }: DisplayVehicleProps) {
                 })
               ) : (
                 <tr>
-                  <td colSpan={10}>Loading...</td>
+                  <td colSpan={10}>
+                    <Skeleton width="100%" />
+                  </td>
                 </tr>
               )}
             </tbody>

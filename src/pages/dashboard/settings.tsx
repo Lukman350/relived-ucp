@@ -48,6 +48,7 @@ export default function Settings({ account }: SettingsProps) {
           curPassword,
           newPassword,
         },
+        token,
       });
 
       if (res.success) {
@@ -128,10 +129,18 @@ export default function Settings({ account }: SettingsProps) {
             style={{ minHeight: "480px" }}
           >
             <div className="d-flex flex-lg-grow-1 flex-column align-items-lg-center align-items-center content-3-6">
-              <h3 className="text-center m-3">Account Settings</h3>
+              <h3
+                className="text-center m-3"
+                data-aos="zoom-in"
+                data-aos-once="true"
+              >
+                Account Settings
+              </h3>
               <div className="accordion" id="accordionExample">
                 <div
                   className="accordion-item"
+                  data-aos="zoom-in-up"
+                  data-aos-once="true"
                   style={{ backgroundColor: "#211f2d" }}
                 >
                   <h2 className="accordion-header" id="headingOne">
@@ -274,6 +283,8 @@ export default function Settings({ account }: SettingsProps) {
                 </div>
                 <div
                   className="accordion-item"
+                  data-aos="zoom-in-up"
+                  data-aos-once="true"
                   style={{ backgroundColor: "#211f2d" }}
                 >
                   <h2 className="accordion-header" id="headingTwo">

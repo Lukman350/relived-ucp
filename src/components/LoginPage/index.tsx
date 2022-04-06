@@ -1,18 +1,30 @@
 import Link from "next/link";
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Cookies from "js-cookie";
 import { useRouter } from "next/router";
 import callAPI from "@/config/api";
 
 import Toast from "@/components/Toast";
-import { PUBLIC_URL, setDisabled, API_HOST } from "@/components/Utils";
+import {
+  PUBLIC_URL,
+  setDisabled,
+  API_HOST,
+  isTokenValid,
+} from "@/components/Utils";
 
 export default function LoginPage() {
-  const [account, setAccount] = useState("");
-  const [password, setPassword] = useState("");
+  const [account, setAccount] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
 
   const router = useRouter();
+
+  useEffect(() => {
+    const token: string = Cookies.get("token") || "";
+    if (isTokenValid(token)) {
+      router.push("/dashboard");
+    }
+  }, [router]);
 
   const togglePassword = () => {
     let x: any = document.getElementById("password-content-3-6");
@@ -69,7 +81,10 @@ export default function LoginPage() {
           className="content-3-6 d-flex flex-column align-items-center h-100 flex-lg-row"
           style={{ fontFamily: '"Poppins", sans-serif' }}
         >
-          <div className="position-relative d-none d-lg-flex flex-column justify-content-center align-items-center width-left">
+          <div
+            className="position-relative d-none d-lg-flex flex-column justify-content-center align-items-center width-left"
+            data-aos="zoom-in"
+          >
             <Image
               className="img-fluid"
               src={`${PUBLIC_URL}/images/login-hero.png`}
@@ -79,7 +94,10 @@ export default function LoginPage() {
               height={300}
             />
           </div>
-          <div className="d-flex mx-auto align-items-left justify-content-left width-right mx-lg-0">
+          <div
+            className="d-flex mx-auto align-items-left justify-content-left width-right mx-lg-0"
+            data-aos="zoom-in-up"
+          >
             <div className="right mx-lg-0 mx-auto">
               <div className="align-items-center justify-content-center d-lg-none d-flex">
                 <Image
@@ -88,6 +106,7 @@ export default function LoginPage() {
                   alt="Login Hero"
                   width={351.75}
                   height={300.58}
+                  data-aos="zoom-in"
                 />
               </div>
               <h3 className="title-text">Log In to continue</h3>
@@ -208,28 +227,4 @@ export default function LoginPage() {
       </section>
     </>
   );
-}
-
-interface GetServerSideProps {
-  req: {
-    cookies: {
-      token: string;
-    };
-  };
-}
-
-export async function getServerSideProps({ req }: GetServerSideProps) {
-  const { token } = req.cookies;
-  if (token) {
-    return {
-      redirect: {
-        destination: "/dashboard",
-        permanent: false,
-      },
-    };
-  }
-
-  return {
-    props: {},
-  };
 }

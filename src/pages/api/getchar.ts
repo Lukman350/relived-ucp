@@ -1,8 +1,9 @@
 import { connection } from "@/database";
-import type { ApiResponseData } from "@/data-types";
+import { ApiResponseData } from "@/data-types";
 import type { NextApiRequest, NextApiResponse } from "next";
+import authenticate from "@/services/auth";
 
-export default async function handler(
+export default authenticate(async function handler(
   req: NextApiRequest,
   res: NextApiResponse<ApiResponseData>
 ) {
@@ -17,7 +18,7 @@ export default async function handler(
         data: null,
         error: "Missing required fields",
       });
-      res.end();
+
       return;
     }
 
@@ -32,7 +33,7 @@ export default async function handler(
           data: null,
           error: "User not found",
         });
-        res.end();
+
         return;
       }
 
@@ -43,7 +44,6 @@ export default async function handler(
         data: user,
         error: null,
       });
-      res.end();
     } else {
       const [rows]: Array<any> = await connection
         .promise()
@@ -58,7 +58,7 @@ export default async function handler(
           data: null,
           error: "User not found",
         });
-        res.end();
+
         return;
       }
 
@@ -69,7 +69,6 @@ export default async function handler(
         data: user,
         error: null,
       });
-      res.end();
     }
   } else {
     res.status(405).json({
@@ -77,6 +76,11 @@ export default async function handler(
       data: null,
       error: "Method not allowed",
     });
-    res.end();
   }
-}
+});
+
+export const config = {
+  api: {
+    externalResolver: true,
+  },
+};

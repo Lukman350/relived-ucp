@@ -1,10 +1,11 @@
 import { connection } from "@/database";
-import type { ApiResponseData } from "@/data-types";
+import { ApiResponseData } from "@/data-types";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { sha256 } from "js-sha256";
 import { randomString } from "@/components/Utils";
+import authenticate from "@/services/auth";
 
-export default async function handler(
+export default authenticate(async function handler(
   req: NextApiRequest,
   res: NextApiResponse<ApiResponseData>
 ) {
@@ -29,7 +30,7 @@ export default async function handler(
           data: null,
           error: "Account not found",
         });
-        res.end();
+
         return;
       }
 
@@ -45,7 +46,7 @@ export default async function handler(
           data: null,
           error: "Current password is incorrect",
         });
-        res.end();
+
         return;
       }
 
@@ -67,7 +68,6 @@ export default async function handler(
         },
         error: null,
       });
-      res.end();
     } else if (type === "email") {
       const { id, curEmail, newEmail } = req.body;
 
@@ -84,7 +84,7 @@ export default async function handler(
           error: "Account not found",
           data: null,
         });
-        res.end();
+
         return;
       }
 
@@ -96,7 +96,7 @@ export default async function handler(
           data: null,
           error: "Current email is incorrect",
         });
-        res.end();
+
         return;
       }
 
@@ -110,7 +110,7 @@ export default async function handler(
           data: null,
           error: "New email already exists",
         });
-        res.end();
+
         return;
       }
 
@@ -126,14 +126,13 @@ export default async function handler(
         },
         error: null,
       });
-      res.end();
     } else {
       res.status(400).json({
         success: false,
         error: "Invalid type",
         data: null,
       });
-      res.end();
+
       return;
     }
   } else {
@@ -142,6 +141,11 @@ export default async function handler(
       success: false,
       data: null,
     });
-    res.end();
   }
-}
+});
+
+export const config = {
+  api: {
+    externalResolver: true,
+  },
+};

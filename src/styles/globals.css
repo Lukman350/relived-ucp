@@ -223,9 +223,9 @@
   padding: 2rem 2.25rem;
 }
 
-.content-2-3 .icon {
+/* .content-2-3 .icon {
   margin-bottom: 1.5rem;
-}
+} */
 
 .content-2-3 .icon-title {
   font: 500 1.5rem/2rem Poppins, sans-serif;
@@ -484,12 +484,12 @@
   color: #737182;
 }
 
-.content-3-6 .input-label {
+.input-label {
   font: 500 1.125rem/1.75rem Poppins, sans-serif;
   color: #d8d7df;
 }
 
-.content-3-6 .div-input {
+.div-input {
   font: 300 1rem/1.5rem Poppins, sans-serif;
   padding: 1rem 1.25rem;
   margin-top: 0.75rem;
@@ -500,31 +500,31 @@
   transition: 0.3s;
 }
 
-.content-3-6 .div-input:focus-within {
+.div-input:focus-within {
   border: 1px solid #524eee;
   color: #d8d7df;
   transition: 0.3s;
 }
 
-.content-3-6 .div-input input::placeholder {
+.div-input input::placeholder {
   color: #4e4b62;
   transition: 0.3s;
 }
 
-.content-3-6 .div-input:focus-within input::placeholder {
+.div-input:focus-within input::placeholder {
   color: #d8d7df;
   outline: none;
   transition: 0.3s;
 }
 
-.content-3-6 .div-input .icon-toggle-empty-3-6 path,
-.content-3-6 .div-input:focus-within .icon path {
+.div-input .icon-toggle-empty-3-6 path,
+.div-input:focus-within .icon path {
   transition: 0.3;
   fill: #524eee;
   transition: 0.3s;
 }
 
-.content-3-6 .input-field {
+.input-field {
   font: 300 1rem/1.5rem Poppins, sans-serif;
   width: 100%;
   background-color: #252332;
@@ -533,7 +533,7 @@
   transition: 0.3s;
 }
 
-.content-3-6 .input-field:focus {
+.input-field:focus {
   outline: none;
   transition: 0.3s;
 }
@@ -669,10 +669,6 @@
     margin-bottom: 4rem;
     width: auto;
   }
-}
-
-.nav-item.active .nav-link {
-  color: #e7e7e8;
 }
 
 .accordion {

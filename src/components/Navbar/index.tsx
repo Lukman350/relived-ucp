@@ -2,9 +2,11 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { PUBLIC_URL, setLogout } from "../Utils";
+import { PUBLIC_URL, setLogout } from "@/components/Utils";
+import { NavbarProps } from "@/data-types";
+import NavLink from "@/components/NavLink";
 
-export default function Navbar({ account }) {
+export default function Navbar({ account }: NavbarProps) {
   const router = useRouter();
 
   return (
@@ -79,55 +81,21 @@ export default function Navbar({ account }) {
                 >
                   <ul className="navbar-nav responsive me-auto mt-2 mt-lg-0">
                     {/* Mobile Nav */}
-                    <li
-                      className={
-                        router.pathname === "/dashboard"
-                          ? "nav-item active"
-                          : "nav-item"
-                      }
-                    >
-                      <a href="/dashboard" className="nav-link">
-                        Home
-                      </a>
-                    </li>
-                    <li
-                      className={
-                        router.pathname === "/dashboard/characters"
-                          ? "nav-item active"
-                          : "nav-item"
-                      }
-                    >
-                      <a href="/dashboard/characters" className="nav-link">
-                        My Characters
-                      </a>
-                    </li>
-                    <li
-                      className={
-                        router.pathname === "/dashboard/settings"
-                          ? "nav-item active"
-                          : "nav-item"
-                      }
-                    >
-                      <a href="/dashboard/settings" className="nav-link">
-                        Settings
-                      </a>
-                    </li>
-                    <li
-                      className={
-                        router.pathname === "/dashboard/donation"
-                          ? "nav-item active"
-                          : "nav-item"
-                      }
-                    >
-                      <a href="/dashboard/donation" className="nav-link">
-                        Donation
-                      </a>
-                    </li>
-                    <li className="nav-item">
-                      <a className="nav-link" href="#" onClick={setLogout}>
-                        Logout
-                      </a>
-                    </li>
+                    <NavLink href="/dashboard" isMobile={true}>
+                      Home
+                    </NavLink>
+                    <NavLink href="/dashboard/characters" isMobile={true}>
+                      My Characters
+                    </NavLink>
+                    <NavLink href="/dashboard/settings" isMobile={true}>
+                      Settings
+                    </NavLink>
+                    <NavLink href="/dashboard/donation" isMobile={true}>
+                      Donation
+                    </NavLink>
+                    <NavLink href="#" onClick={setLogout} isMobile={true}>
+                      Logout
+                    </NavLink>
                   </ul>
                 </div>
                 <div
@@ -233,14 +201,14 @@ export default function Navbar({ account }) {
                       aria-labelledby="dropdownUser1"
                     >
                       <li>
-                        <Link href="/dashboard/settings">
-                          <a className="dropdown-item">Settings</a>
-                        </Link>
+                        <a href="/dashboard/settings" className="dropdown-item">
+                          Settings
+                        </a>
                       </li>
                       <li>
-                        <Link href="/dashboard/profile">
-                          <a className="dropdown-item">Profile</a>
-                        </Link>
+                        <a href="/dashboard/profile" className="dropdown-item">
+                          Profile
+                        </a>
                       </li>
                       <li>
                         <hr className="dropdown-divider" />
@@ -262,55 +230,13 @@ export default function Navbar({ account }) {
           </div>
           <div className="collapse navbar-collapse" id="navbarTogglerDemo">
             <ul className="navbar-nav me-auto mt-2 mt-lg-0">
-              <li
-                className={
-                  router.pathname === "/dashboard"
-                    ? "nav-item active"
-                    : "nav-item"
-                }
-              >
-                <Link href="/dashboard">
-                  <a className="nav-link">Home</a>
-                </Link>
-              </li>
-              <li
-                className={
-                  router.pathname === "/dashboard/characters"
-                    ? "nav-item active"
-                    : "nav-item"
-                }
-              >
-                <Link href="/dashboard/characters">
-                  <a className="nav-link">My Characters</a>
-                </Link>
-              </li>
-              <li
-                className={
-                  router.pathname === "/dashboard/settings"
-                    ? "nav-item active"
-                    : "nav-item"
-                }
-              >
-                <Link href="/dashboard/settings">
-                  <a className="nav-link">Settings</a>
-                </Link>
-              </li>
-              <li
-                className={
-                  router.pathname === "/dashboard/donation"
-                    ? "nav-item active"
-                    : "nav-item"
-                }
-              >
-                <Link href="/dashboard/donation">
-                  <a className="nav-link">Donation</a>
-                </Link>
-              </li>
-              <li className="nav-item">
-                <a className="nav-link" href="#" onClick={setLogout}>
-                  Logout
-                </a>
-              </li>
+              <NavLink href="/dashboard">Home</NavLink>
+              <NavLink href="/dashboard/characters">My Characters</NavLink>
+              <NavLink href="/dashboard/settings">Settings</NavLink>
+              <NavLink href="/dashboard/donation">Donation</NavLink>
+              <NavLink href="#" onClick={setLogout}>
+                Logout
+              </NavLink>
             </ul>
             <div className="gap-3">
               <div className="dropdown">

@@ -1,6 +1,12 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import "@/styles/globals.css";
 import "@/styles/nprogress.css";
+import "react-loading-skeleton/dist/skeleton.css";
+import "react-toastify/dist/ReactToastify.css";
+import AOS from "aos";
+import "aos/dist/aos.css";
+
+import { ToastContainer, Flip } from "react-toastify";
 import type { AppProps } from "next/app";
 import NProgress from "nprogress";
 import { useRouter } from "next/router";
@@ -10,6 +16,11 @@ function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter();
 
   useEffect(() => {
+    AOS.init({
+      once: false,
+      duration: 1500,
+    });
+
     const handleStart = () => {
       NProgress.start();
     };
@@ -28,7 +39,22 @@ function MyApp({ Component, pageProps }: AppProps) {
     };
   }, [router]);
 
-  return <Component {...pageProps} />;
+  return (
+    <>
+      <Component {...pageProps} />
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        theme="dark"
+        transition={Flip}
+      />
+    </>
+  );
 }
 
 export default MyApp;

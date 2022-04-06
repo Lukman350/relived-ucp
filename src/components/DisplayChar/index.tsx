@@ -8,8 +8,11 @@ import {
 import Link from "next/link";
 import Image from "next/image";
 import { DisplayCharProps, VehicleDataLess } from "@/data-types";
+import Skeleton from "react-loading-skeleton";
+import { useRouter } from "next/router";
 
 export default function DisplayChar({ char, vehicle }: DisplayCharProps) {
+  const router = useRouter();
   return (
     <div className="mx-auto d-flex flex-lg-row flex-column hero">
       <style jsx>
@@ -35,17 +38,23 @@ export default function DisplayChar({ char, vehicle }: DisplayCharProps) {
         `}
       </style>
       {/* Left Column */}
-      <div className="left-column d-flex flex-lg-grow-1 flex-column text-lg-start align-items-center">
+      <div
+        className="left-column d-flex flex-lg-grow-1 flex-column text-lg-start align-items-center"
+        data-aos="zoom-in"
+        data-aos-once="true"
+      >
         <h3 className="h3 text-center m-3">
-          {char.Character
-            ? `${char.Character.split("_")[0]} ${
-                char.Character.split("_")[1]
-              } #${char.ID}`
-            : ""}
+          {char !== null ? (
+            `${char.Character.split("_")[0]} ${char.Character.split("_")[1]} #${
+              char.ID
+            }`
+          ) : (
+            <Skeleton />
+          )}
         </h3>
         <Image
-          src={`${PUBLIC_URL}/images/skins/${char.Skin}.png`}
-          alt={char.Character}
+          src={`${PUBLIC_URL}/images/skins/${char !== null && char.Skin}.png`}
+          alt={char !== null ? char.Character : "Character Skin"}
           quality={100}
           className="img-fluid"
           width={186}
@@ -54,14 +63,24 @@ export default function DisplayChar({ char, vehicle }: DisplayCharProps) {
       </div>
       {/* Right Column */}
       <div className="right-column d-flex flex-lg-grow-1 flex-column text-lg-start align-items-center">
-        <h3 className="h3 text-center m-3">Statistics</h3>
-        <div className="responsive-table">
+        <h3
+          className="h3 text-center m-3"
+          data-aos="zoom-in"
+          data-aos-once="true"
+        >
+          Statistics
+        </h3>
+        <div
+          className="responsive-table"
+          data-aos="zoom-in-up"
+          data-aos-once="true"
+        >
           <table
             className="table table-responsive text-white"
             style={{ backgroundColor: "#141432" }}
           >
             <tbody>
-              {char !== undefined ? (
+              {char !== null ? (
                 <>
                   <tr>
                     <td>Level</td>
@@ -192,7 +211,7 @@ export default function DisplayChar({ char, vehicle }: DisplayCharProps) {
               ) : (
                 <tr>
                   <td colSpan={4} style={{ textAlign: "center" }}>
-                    Loading...
+                    <Skeleton width="100%" />
                   </td>
                 </tr>
               )}
@@ -245,6 +264,17 @@ export default function DisplayChar({ char, vehicle }: DisplayCharProps) {
               </tbody>
             </table>
           </div>
+        </div>
+
+        <div className="mt-3">
+          <a
+            className="btn btn-fill text-white p-2 mx-2"
+            style={{ fontSize: "1rem" }}
+            href="#"
+            onClick={() => router.back()}
+          >
+            Go back
+          </a>
         </div>
       </div>
     </div>

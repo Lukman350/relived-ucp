@@ -1,19 +1,28 @@
-import Layout from "../../components/Layout";
-import Navbar from "../../components/Navbar";
-import Footer from "../../components/Footer";
+import Layout from "@/components/Layout";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 import Cookies from "js-cookie";
 import { useEffect, useState } from "react";
-import { getAccount, isTokenValid } from "../../components/Utils";
+import { getAccount, isTokenValid } from "@/components/Utils";
+import { UserTypes } from "@/data-types";
+import { useRouter } from "next/router";
+import { DonationProps } from "@/data-types";
 
-export default function Donation() {
-  const [account, setAccount] = useState({});
+export default function Donation({ donation }: DonationProps) {
+  const [account, setAccount] = useState<UserTypes>();
+
+  const router = useRouter();
 
   useEffect(() => {
-    const tokenCookies = Cookies.get("token");
-    if (tokenCookies) {
-      setAccount(getAccount(tokenCookies));
+    const tokenCookies: string = Cookies.get("token") || "";
+    if (isTokenValid(tokenCookies)) {
+      const decoded: UserTypes = getAccount(tokenCookies);
+      setAccount(decoded);
+    } else {
+      Cookies.remove("token");
+      router.push("/login");
     }
-  }, []);
+  }, [router]);
 
   return (
     <Layout title="Relived - Donation Page">
@@ -42,31 +51,4 @@ export default function Donation() {
       </section>
     </Layout>
   );
-}
-
-export async function getServerSideProps({ req }) {
-  const { token } = req.cookies;
-
-  if (!token) {
-    return {
-      redirect: {
-        destination: "/login",
-        permanent: false,
-      },
-    };
-  } else {
-    if (!isTokenValid(token)) {
-      Cookies.remove("token");
-      return {
-        redirect: {
-          destination: "/login",
-          permanent: false,
-        },
-      };
-    }
-  }
-
-  return {
-    props: {},
-  };
 }

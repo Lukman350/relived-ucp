@@ -4,11 +4,31 @@ export interface LayoutProps {
 }
 
 export interface HomeProps {
-  data: object;
+  data: ServerDataTypes;
 }
 
-export interface DisplayServerProps {
-  data: object;
+export interface ServerDataTypes {
+  address: string;
+  hostname: string;
+  gamemode: string;
+  mapname: string;
+  passworded: boolean;
+  maxplayers: number;
+  online: number;
+  rules: {
+    lagcomp: boolean;
+    mapname: string;
+    version: string;
+    weather: number;
+    weburl: string;
+    worldtime: string;
+  };
+  players: Array<{
+    id: number;
+    name: string;
+    score: number;
+    ping: number;
+  }>;
 }
 
 export interface ErrorProps {
@@ -40,7 +60,7 @@ export interface JWTPayloadTypes {
 }
 
 export interface DashboardIndexProps {
-  account: object;
+  account: any;
   players: any;
   stats: any;
 }
@@ -65,7 +85,7 @@ export interface PlayerTypes {
 
 export interface CharactersProps {
   ucp: CharacterProperty;
-  account: object;
+  account: any;
 }
 
 export interface CharacterProperty {
@@ -81,7 +101,7 @@ export interface CharTypes {
 }
 
 export interface SettingsProps {
-  account: object;
+  account: any;
 }
 
 export interface ServerStatisticProps {
@@ -106,6 +126,7 @@ export interface CharProps {
 export interface DisplayCharProps {
   char: CharProperty;
   vehicle: VehicleProperty;
+  // inventory: InventoryProperty;
 }
 
 export interface CharProperty {
@@ -170,3 +191,35 @@ export interface VehicleDataTypes {
   Health: number;
   Fuel: number;
 }
+
+export interface NavbarProps {
+  account: any;
+}
+
+export interface VehicleProps {
+  account: any;
+  id: VehicleDataProperty;
+}
+
+export interface ProfileProps {
+  account: any;
+  profile: {
+    ID: number;
+    Username: string;
+    Email: string;
+    Admin: number;
+    RegisterDate: number;
+    IP: string;
+  };
+}
+
+export interface DonationProps {
+  donation: object;
+}
+
+// export interface InventoryProperty {
+//   invID: number;
+//   invItem: string;
+//   invModel: number;
+//   invQuantity: number;
+// }

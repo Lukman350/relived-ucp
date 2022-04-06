@@ -1,8 +1,9 @@
 import { connection } from "@/database";
 import { sha256 } from "js-sha256";
 import jwt from "jsonwebtoken";
-import type { ApiResponseData } from "@/data-types";
+import { ApiResponseData } from "@/data-types";
 import type { NextApiRequest, NextApiResponse } from "next";
+import { jwtSecret } from "@/components/Utils";
 
 export default function handler(
   req: NextApiRequest,
@@ -19,7 +20,7 @@ export default function handler(
         data: null,
         error: "Missing required fields",
       });
-      res.end();
+
       return;
     }
 
@@ -32,7 +33,7 @@ export default function handler(
           data: null,
           error: "Internal server error (Wrong SQL)",
         });
-        res.end();
+
         return;
       } else {
         if (rows.length === 0) {
@@ -41,7 +42,7 @@ export default function handler(
             data: null,
             error: "User not found",
           });
-          res.end();
+
           return;
         }
 
@@ -58,7 +59,7 @@ export default function handler(
             data: null,
             error: "Password is incorrect",
           });
-          res.end();
+
           return;
         }
 
@@ -71,7 +72,7 @@ export default function handler(
               admin: user.Admin,
             },
           },
-          "SECRET",
+          jwtSecret,
           {
             expiresIn: "1h",
           }
@@ -84,7 +85,6 @@ export default function handler(
             token,
           },
         });
-        res.end();
       }
     });
   } else {
@@ -93,6 +93,11 @@ export default function handler(
       data: null,
       error: "Invalid request method",
     });
-    res.end();
   }
 }
+
+export const config = {
+  api: {
+    externalResolver: true,
+  },
+};

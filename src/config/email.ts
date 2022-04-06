@@ -1,9 +1,13 @@
 import nodemailer from "nodemailer";
 import smtpTransport from "nodemailer-smtp-transport";
-import { USER_EMAIL, USER_PASSWORD } from "../components/Utils";
+import { USER_EMAIL, USER_PASSWORD } from "@/components/Utils";
 
-export default async function sendEmail(email, subject, html) {
-  return await new Promise((resolve, reject) => {
+export default async function sendEmail(
+  email: string,
+  subject: string,
+  html: string
+) {
+  return await new Promise(async (resolve, reject) => {
     const options = {
       from: `Relived Roleplay <${USER_EMAIL}>`,
       to: email,

@@ -94,13 +94,13 @@ export async function getServerSideProps({ req, params }: GetServerSideProps) {
     const character = await callAPI({
       url: `${API_HOST}/char/${id}`,
       method: "GET",
-      token: true,
+      token,
     });
 
     const veh = await callAPI({
       url: `${API_HOST}/char/vehicle/owner/${id}`,
       method: "GET",
-      token: true,
+      token,
     });
 
     if (character.success) {

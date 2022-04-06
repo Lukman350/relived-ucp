@@ -1,8 +1,13 @@
-import { connection } from "../../../../database";
+import { connection } from "@/database";
 import { sha256 } from "js-sha256";
-import { randomString } from "../../../../components/Utils";
+import { randomString } from "@/components/Utils";
+import { ApiResponseData } from "@/data-types";
+import type { NextApiRequest, NextApiResponse } from "next";
 
-export default async function handler(req, res) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse<ApiResponseData>
+) {
   const { method } = req;
 
   if (method === "POST") {
@@ -11,14 +16,14 @@ export default async function handler(req, res) {
     if (!ucpID || !token || !password) {
       res.status(400).json({
         success: false,
+        data: null,
         error: "Missing required fields",
       });
-      res.end();
 
       return;
     }
 
-    const [rows] = await connection
+    const [rows]: Array<any> = await connection
       .promise()
       .execute(
         "SELECT `ID`, `updated` FROM `forgot_request` WHERE `token` = ? AND `ucpID` = ? LIMIT 1",
@@ -28,9 +33,9 @@ export default async function handler(req, res) {
     if (rows.length === 0) {
       res.status(400).json({
         success: false,
+        data: null,
         error: "Invalid token",
       });
-      res.end();
 
       return;
     }
@@ -44,20 +49,20 @@ export default async function handler(req, res) {
         .execute("DELETE FROM `forgot_request` WHERE `ID` = ?", [ID]);
       res.status(400).json({
         success: false,
+        data: null,
         error: "Token expired",
       });
-      res.end();
 
       return;
     }
 
-    const newSalt = randomString(64);
+    const newSalt: string = randomString(64);
 
-    const newHash = sha256(password + newSalt)
+    const newHash: string = sha256(password + newSalt)
       .toString()
       .toUpperCase();
 
-    const [update] = await connection
+    const [update]: Array<any> = await connection
       .promise()
       .execute(
         "UPDATE `accounts` SET `Password` = ?, `Salt` = ? WHERE `ID` = ?",
@@ -67,9 +72,9 @@ export default async function handler(req, res) {
     if (update.affectedRows === 0) {
       res.status(500).json({
         success: false,
+        data: null,
         error: "Failed to update password",
       });
-      res.end();
 
       return;
     }
@@ -80,13 +85,20 @@ export default async function handler(req, res) {
 
     res.status(200).json({
       success: true,
+      data: null,
+      error: null,
     });
-    res.end();
   } else {
     res.status(405).json({
       success: false,
+      data: null,
       error: "Method not allowed",
     });
-    res.end();
   }
 }
+
+export const config = {
+  api: {
+    externalResolver: true,
+  },
+};

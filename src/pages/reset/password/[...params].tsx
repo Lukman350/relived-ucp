@@ -58,7 +58,10 @@ export default function ResetPassword() {
           className="content-3-6 d-flex flex-column align-items-center h-100 flex-lg-row"
           style={{ fontFamily: '"Poppins", sans-serif' }}
         >
-          <div className="position-relative d-none d-lg-flex flex-column justify-content-center align-items-center width-left">
+          <div
+            className="position-relative d-none d-lg-flex flex-column justify-content-center align-items-center width-left"
+            data-aos="zoom-in"
+          >
             <Image
               className="img-fluid"
               src={`${PUBLIC_URL}/images/reset-hero.svg`}
@@ -68,7 +71,10 @@ export default function ResetPassword() {
               height={300}
             />
           </div>
-          <div className="d-flex mx-auto align-items-left justify-content-left width-right mx-lg-0">
+          <div
+            className="d-flex mx-auto align-items-left justify-content-left width-right mx-lg-0"
+            data-aos="zoom-in-up"
+          >
             <div className="right mx-lg-0 mx-auto">
               <div className="align-items-center justify-content-center d-lg-none d-flex">
                 <Image
@@ -77,6 +83,7 @@ export default function ResetPassword() {
                   alt="Login Hero"
                   width={351.75}
                   height={300.58}
+                  data-aos="zoom-in"
                 />
               </div>
               <h3 className="title-text mt-3">Reset Password</h3>

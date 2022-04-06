@@ -1,7 +1,7 @@
 import { DisplayPlayersProps, PlayerTypes } from "@/data-types";
+import Skeleton from "react-loading-skeleton";
 
 export default function Players({ data }: DisplayPlayersProps) {
-  const players: Array<any> = data.players;
   return (
     <div className="text-left">
       <style jsx>
@@ -29,17 +29,29 @@ export default function Players({ data }: DisplayPlayersProps) {
           }
         `}
       </style>
-      <h3 className="h3 text-center m-3">Server Status</h3>
-      <h5 className="h5">
+      <h3
+        className="h3 text-center m-3"
+        data-aos="zoom-in"
+        data-aos-once="true"
+      >
+        Server Status
+      </h3>
+      <h5 className="h5" data-aos="zoom-in" data-aos-once="true">
         Status:{" "}
-        {data.success === false ? (
+        {data === null ? (
           <b className="text-danger">OFF</b>
         ) : (
           <b className="text-success">ON</b>
         )}
       </h5>
-      <h5 className="h5">Players: {`${data.online} / ${data.maxplayers}`}</h5>
-      <div className="responsive-table">
+      <h5 className="h5" data-aos="zoom-in" data-aos-once="true">
+        Players: {data !== null && `${data.online} / ${data.maxplayers}`}
+      </h5>
+      <div
+        className="responsive-table"
+        data-aos="zoom-in-up"
+        data-aos-once="true"
+      >
         <table
           className="table table-responsive text-white"
           style={{ backgroundColor: "#141432" }}
@@ -53,8 +65,8 @@ export default function Players({ data }: DisplayPlayersProps) {
             </tr>
           </thead>
           <tbody>
-            {data ? (
-              players.map((player: PlayerTypes) => (
+            {data !== null ? (
+              data.players.map((player: PlayerTypes) => (
                 <tr key={player.id}>
                   <td>{player.id}</td>
                   <td>{player.name}</td>
@@ -64,7 +76,9 @@ export default function Players({ data }: DisplayPlayersProps) {
               ))
             ) : (
               <tr>
-                <td colSpan={4}>Loading...</td>
+                <td colSpan={4}>
+                  <Skeleton />
+                </td>
               </tr>
             )}
           </tbody>

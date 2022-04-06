@@ -13,7 +13,7 @@ export default function Layout({ title, children }: LayoutProps) {
         <meta name="title" content="Relived Community" />
         <meta
           name="description"
-          content="Relived Roleplay adalah server dari GTA San Andreas Multiplayer yang didedikasikan untuk seluruh player SA:MP, server ini bermode Roleplay."
+          content={`${title} - Relived Roleplay adalah server dari GTA San Andreas Multiplayer yang didedikasikan untuk seluruh player SA:MP, server ini bermode Roleplay.`}
         />
         <meta
           name="keywords"
@@ -22,7 +22,7 @@ export default function Layout({ title, children }: LayoutProps) {
         <meta property="og:title" content={title} />
         <meta
           property="og:description"
-          content="Relived Roleplay adalah server dari GTA San Andreas Multiplayer yang didedikasikan untuk seluruh player SA:MP, server ini bermode Roleplay."
+          content={`${title} - Relived Roleplay adalah server dari GTA San Andreas Multiplayer yang didedikasikan untuk seluruh player SA:MP, server ini bermode Roleplay.`}
         />
         <meta property="og:image" content={`${PUBLIC_URL}/banner.jpg`} />
         <meta property="og:url" content={`${PUBLIC_URL}`} />
@@ -41,6 +41,22 @@ export default function Layout({ title, children }: LayoutProps) {
         integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0"
         crossOrigin="anonymous"
       />
+
+      {/* <!-- Global site tag (gtag.js) - Google Analytics --> */}
+      <Script
+        async
+        src="https://www.googletagmanager.com/gtag/js?id=G-28Q2P7CYKX"
+        strategy="afterInteractive"
+      />
+      <Script id="google-analytics" strategy="afterInteractive">
+        {`
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+
+          gtag('config', 'G-28Q2P7CYKX');
+        `}
+      </Script>
     </>
   );
 }

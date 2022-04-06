@@ -7,16 +7,15 @@ import { useRouter } from "next/router";
 import callAPI from "@/config/api";
 import Footer from "@/components/Footer";
 import Swal from "sweetalert2";
-import withReactContent from "sweetalert2-react-content";
 import { CharactersProps, CharTypes } from "@/data-types";
-
-const MySwal = withReactContent(Swal);
+import Skeleton from "react-loading-skeleton";
+import { ApiResponseData } from "@/data-types";
 
 export default function Characters({ account, ucp }: CharactersProps) {
   const router = useRouter();
 
   const deleteChar = async (charid: number) => {
-    MySwal.fire({
+    Swal.fire({
       title: "Delete Character",
       text: `Are you sure? Want to delete character ID ${charid}?`,
       icon: "warning",
@@ -26,28 +25,32 @@ export default function Characters({ account, ucp }: CharactersProps) {
       confirmButtonText: "Yes, delete it!",
       showLoaderOnConfirm: true,
       preConfirm: async () => {
-        const res = await callAPI({
-          url: `${API_HOST}/char/delete`,
-          method: "POST",
-          data: {
-            id: charid,
-          },
-          token: true,
-        });
+        const token = Cookies.get("token");
 
-        if (res.success === false) {
-          MySwal.showValidationMessage(`Request failed: ${res.error}`);
+        if (token) {
+          const res = await callAPI({
+            url: `${API_HOST}/char/delete`,
+            method: "POST",
+            data: {
+              id: charid,
+            },
+            token,
+          });
+
+          if (res.success === false) {
+            Swal.showValidationMessage(`Request failed: ${res.error}`);
+          }
         }
       },
     }).then((result) => {
       if (result.isConfirmed) {
-        MySwal.fire({
+        Swal.fire({
           title: "Deleted!",
           text: "Your character has been deleted.",
           icon: "success",
         });
 
-        router.reload();
+        router.prefetch("/dashboard/characters");
       }
     });
   };
@@ -103,8 +106,18 @@ export default function Characters({ account, ucp }: CharactersProps) {
               `}
             </style>
             <div className="d-flex flex-lg-grow-1 flex-column align-items-center">
-              <h3 className="h3 text-center mt-1">Your Characters</h3>
-              <div className="responsive-table">
+              <h3
+                className="h3 text-center mt-1"
+                data-aos="zoom-in"
+                data-aos-once="true"
+              >
+                Your Characters
+              </h3>
+              <div
+                className="responsive-table"
+                data-aos="zoom-in-up"
+                data-aos-once="true"
+              >
                 <table
                   className="table table-responsive text-white"
                   style={{ backgroundColor: "#141432" }}
@@ -136,7 +149,10 @@ export default function Characters({ account, ucp }: CharactersProps) {
                           <td>{char.pScore}</td>
                           <td>{char.Gender === 1 ? "Male" : "Female"}</td>
                           <td>
-                            <Link href={`/dashboard/char/${char.ID}`}>
+                            <Link
+                              href="/dashboard/char/[id]"
+                              as={`/dashboard/char/${char.ID}`}
+                            >
                               <a
                                 className="btn btn-fill text-white p-2 mx-2"
                                 style={{ fontSize: "1rem" }}
@@ -156,11 +172,23 @@ export default function Characters({ account, ucp }: CharactersProps) {
                         </tr>
                       ))
                     ) : (
-                      <tr>
-                        <td colSpan={4} style={{ textAlign: "center" }}>
-                          Loading...
-                        </td>
-                      </tr>
+                      <>
+                        <tr>
+                          <td colSpan={5} style={{ textAlign: "center" }}>
+                            <Skeleton width="100%" height={20} />
+                          </td>
+                        </tr>
+                        <tr>
+                          <td colSpan={5} style={{ textAlign: "center" }}>
+                            <Skeleton width="100%" height={20} />
+                          </td>
+                        </tr>
+                        <tr>
+                          <td colSpan={5} style={{ textAlign: "center" }}>
+                            <Skeleton width="100%" height={20} />
+                          </td>
+                        </tr>
+                      </>
                     )}
                   </tbody>
                 </table>
@@ -214,7 +242,7 @@ export async function getServerSideProps({ req }: GetServerSideProps) {
       all: true,
       ucp: account.username,
     },
-    token: true,
+    token,
   });
 
   return {

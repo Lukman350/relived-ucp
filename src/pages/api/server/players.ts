@@ -1,7 +1,7 @@
 // @ts-ignore
 import query from "samp-query";
 import type { NextApiRequest, NextApiResponse } from "next";
-import type { ApiResponseData } from "@/data-types";
+import { ApiResponseData } from "@/data-types";
 
 export default async function handler(
   req: NextApiRequest,
@@ -20,9 +20,9 @@ export default async function handler(
         res.status(500).json({
           success: false,
           data: null,
-          error: "Internal server error",
+          error: err,
         });
-        res.end();
+
         return;
       }
 
@@ -31,7 +31,6 @@ export default async function handler(
         data,
         error: null,
       });
-      res.end();
     });
   } else {
     res.status(400).json({
@@ -39,6 +38,11 @@ export default async function handler(
       data: null,
       error: "Invalid request method",
     });
-    res.end();
   }
 }
+
+export const config = {
+  api: {
+    externalResolver: true,
+  },
+};

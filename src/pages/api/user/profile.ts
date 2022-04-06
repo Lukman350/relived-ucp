@@ -9,45 +9,43 @@ export default authenticate(async function handler(
 ) {
   const { method } = req;
 
-  if (method === "GET") {
-    const { id } = req.query;
+  if (method === "POST") {
+    const { ucp } = req.body;
 
-    if (!id) {
+    if (!ucp) {
       res.status(400).json({
         success: false,
-        error: "Invalid owner",
+        error: "Missing ucp",
         data: null,
       });
-
       return;
     }
 
-    const [rows]: Array<any> = await connection
+    const [result]: Array<any> = await connection
       .promise()
       .execute(
-        "SELECT `ID`, `Owner`, `Model`, `Insurance`, `EngineUpgrade`, `BodyUpgrade`, `Plate`, `Health`, `Fuel`, `Garage`, `GarageApart`, `GarageFlat`, `Impound`, `InsideInsurance` FROM `player_vehicles` WHERE ID = ? LIMIT 1",
-        [id]
+        "SELECT `ID`, `Username`, `Email`, `Admin`, `RegisterDate`, `IP` FROM `accounts` WHERE `Username` = ? LIMIT 1",
+        [ucp]
       );
 
-    if (rows.length === 0) {
-      res.status(404).json({
+    if (result.length === 0) {
+      res.status(400).json({
         success: false,
-        error: "Invalid ID",
+        error: "User not found",
         data: null,
       });
-
       return;
     }
 
     res.status(200).json({
       success: true,
-      data: rows,
       error: null,
+      data: result[0],
     });
   } else {
-    res.status(500).json({
+    res.status(400).json({
+      error: "Invalid method",
       success: false,
-      error: "Method not allowed",
       data: null,
     });
   }

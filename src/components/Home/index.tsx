@@ -1,13 +1,47 @@
+/* eslint-disable @next/next/no-html-link-for-pages */
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { HomeProps } from "@/data-types";
-import DisplayServer from "@/components/DisplayServer";
-import { PUBLIC_URL } from "@/components/Utils";
+import { PUBLIC_URL, isTokenValid, setDisabled } from "@/components/Utils";
+import NavLink from "@/components/NavLink";
+import { useEffect } from "react";
+import Cookies from "js-cookie";
+import Skeleton from "react-loading-skeleton";
+import changelog from "@/services/changelog";
+import Toast from "@/components/Toast";
+import callAPI from "@/config/api";
 
 export default function Landing({ data }: HomeProps) {
   const router = useRouter();
 
+  useEffect(() => {
+    const token: string = Cookies.get("token") || "";
+
+    if (isTokenValid(token)) {
+      router.push("/dashboard");
+    }
+  }, [router]);
+
+  const handleSubmit = async (e: any) => {
+    e.preventDefault();
+    setDisabled(e.target, true);
+
+    const data = new FormData(e.target);
+    const res = await callAPI({
+      url: "https://formspree.io/f/mnqwbyez",
+      method: "POST",
+      data,
+    });
+
+    if (res.success) {
+      Toast.success("Pesan kamu telah berhasil terkirim");
+      setDisabled(e.target, false);
+    } else {
+      Toast.error("Terjadi kesalahan saat mengirim pesan");
+      setDisabled(e.target, false);
+    }
+  };
   return (
     <>
       <section
@@ -68,6 +102,7 @@ export default function Landing({ data }: HomeProps) {
                       className="close btn-close text-white"
                       data-bs-dismiss="modal"
                       aria-label="Close"
+                      onClick={(e) => e.preventDefault()}
                     />
                   </div>
                   <div
@@ -79,108 +114,23 @@ export default function Landing({ data }: HomeProps) {
                     }}
                   >
                     <ul className="navbar-nav responsive me-auto mt-2 mt-lg-0">
-                      <li
-                        className={
-                          router.pathname === "/"
-                            ? "nav-item active"
-                            : "nav-item"
-                        }
-                      >
-                        <a
-                          className="nav-link"
-                          href="#"
-                          style={
-                            router.pathname === "/" ? { color: "#e7e7e8" } : {}
-                          }
-                        >
-                          Home
-                        </a>
-                      </li>
-                      <li
-                        className={
-                          router.pathname === "/#about"
-                            ? "nav-item active"
-                            : "nav-item"
-                        }
-                      >
-                        <a
-                          className="nav-link"
-                          href="#about"
-                          style={
-                            router.pathname === "/#about"
-                              ? { color: "#e7e7e8" }
-                              : {}
-                          }
-                        >
-                          About Us
-                        </a>
-                      </li>
-                      <li
-                        className={
-                          router.pathname === "/#features"
-                            ? "nav-item active"
-                            : "nav-item"
-                        }
-                      >
-                        <a
-                          className="nav-link"
-                          href="#features"
-                          style={
-                            router.pathname === "/#features"
-                              ? { color: "#e7e7e8" }
-                              : {}
-                          }
-                        >
-                          Features
-                        </a>
-                      </li>
-                      <li
-                        className={
-                          router.pathname === "/#changelog"
-                            ? "nav-item active"
-                            : "nav-item"
-                        }
-                      >
-                        <a
-                          className="nav-link"
-                          href="#changelog"
-                          style={
-                            router.pathname === "/#changelog"
-                              ? { color: "#e7e7e8" }
-                              : {}
-                          }
-                        >
-                          Changelog
-                        </a>
-                      </li>
-                      <li
-                        className={
-                          router.pathname === "/#contact"
-                            ? "nav-item active"
-                            : "nav-item"
-                        }
-                      >
-                        <a
-                          className="nav-link"
-                          href="#contact"
-                          style={
-                            router.pathname === "/#contact"
-                              ? { color: "#e7e7e8" }
-                              : {}
-                          }
-                        >
-                          Contact
-                        </a>
-                      </li>
+                      <NavLink href="/">Home</NavLink>
+                      <NavLink href="/#about">About Us</NavLink>
+                      <NavLink href="/#features">Features</NavLink>
+                      <NavLink href="/#changelog">Changelog</NavLink>
+                      <NavLink href="/#contact">Contact</NavLink>
                     </ul>
                   </div>
                   <div
                     className="modal-footer border-0 gap-3"
                     style={{ padding: "2rem", paddingTop: "0.75rem" }}
                   >
-                    <Link href={"/login"}>
-                      <a className="btn btn-fill text-white border-0">Log In</a>
-                    </Link>
+                    <a
+                      href="/login"
+                      className="btn btn-fill text-white border-0"
+                    >
+                      Log In
+                    </a>
                     <a
                       href="https://discord.gg/relivedroleplay"
                       target="_blank"
@@ -195,93 +145,11 @@ export default function Landing({ data }: HomeProps) {
             </div>
             <div className="collapse navbar-collapse" id="navbarTogglerDemo">
               <ul className="navbar-nav me-auto mt-2 mt-lg-0">
-                <li
-                  className={
-                    router.pathname === "/" ? "nav-item active" : "nav-item"
-                  }
-                >
-                  <a
-                    className="nav-link"
-                    href="#"
-                    style={router.pathname === "/" ? { color: "#e7e7e8" } : {}}
-                  >
-                    Home
-                  </a>
-                </li>
-                <li
-                  className={
-                    router.pathname === "/#about"
-                      ? "nav-item active"
-                      : "nav-item"
-                  }
-                >
-                  <a
-                    className="nav-link"
-                    href="#about"
-                    style={
-                      router.pathname === "/#about" ? { color: "#e7e7e8" } : {}
-                    }
-                  >
-                    About Us
-                  </a>
-                </li>
-                <li
-                  className={
-                    router.pathname === "/#features"
-                      ? "nav-item active"
-                      : "nav-item"
-                  }
-                >
-                  <a
-                    className="nav-link"
-                    href="#features"
-                    style={
-                      router.pathname === "/#features"
-                        ? { color: "#e7e7e8" }
-                        : {}
-                    }
-                  >
-                    Features
-                  </a>
-                </li>
-                <li
-                  className={
-                    router.pathname === "/#changelog"
-                      ? "nav-item active"
-                      : "nav-item"
-                  }
-                >
-                  <a
-                    className="nav-link"
-                    href="#changelog"
-                    style={
-                      router.pathname === "/#changelog"
-                        ? { color: "#e7e7e8" }
-                        : {}
-                    }
-                  >
-                    Changelog
-                  </a>
-                </li>
-                <li
-                  className={
-                    router.pathname === "/#contact"
-                      ? "nav-item active"
-                      : "nav-item"
-                  }
-                >
-                  <a
-                    className="nav-link"
-                    href="#contact"
-                    style={
-                      router.pathname === "/#contact"
-                        ? { color: "#e7e7e8" }
-                        : {}
-                    }
-                  >
-                    Contact
-                  </a>
-                </li>
+                <NavLink href="/">Home</NavLink>
+                <NavLink href="/#about">About Us</NavLink>
+                <NavLink href="/#features">Features</NavLink>
+                <NavLink href="/#changelog">Changelog</NavLink>
+                <NavLink href="/#contact">Contact</NavLink>
               </ul>
               <div className="gap-3">
                 <Link href={"/login"}>
@@ -301,7 +169,10 @@ export default function Landing({ data }: HomeProps) {
           <div>
             <div className="mx-auto d-flex flex-lg-row flex-column hero">
               {/* Left Column */}
-              <div className="left-column d-flex flex-lg-grow-1 flex-column align-items-lg-start text-lg-start align-items-center text-center">
+              <div
+                className="left-column d-flex flex-lg-grow-1 flex-column align-items-lg-start text-lg-start align-items-center text-center"
+                data-aos="zoom-out-up"
+              >
                 <h1 className="title-text-big">
                   Relived Roleplay
                   <br />
@@ -324,10 +195,12 @@ export default function Landing({ data }: HomeProps) {
                 </div>
               </div>
               {/* Right Column */}
-              <div className="right-column text-center d-flex justify-content-center pe-0">
+              <div
+                className="right-column text-center d-flex justify-content-center pe-0"
+                data-aos="zoom-out-down"
+              >
                 <Image
-                  id="img-fluid"
-                  className="h-auto mw-100"
+                  className="img-fluid h-auto mw-100"
                   quality={100}
                   src={`${PUBLIC_URL}/images/header-1.svg`}
                   alt="Header"
@@ -339,6 +212,7 @@ export default function Landing({ data }: HomeProps) {
           </div>
         </div>
       </section>
+      {/* About */}
       <section
         className="h-100 w-100"
         style={{ boxSizing: "border-box", backgroundColor: "#141432" }}
@@ -348,7 +222,7 @@ export default function Landing({ data }: HomeProps) {
           className="content-2-3 container-xxl mx-auto p-0 position-relative"
           style={{ fontFamily: '"Poppins", sans-serif' }}
         >
-          <div className="title-text">
+          <div className="title-text" data-aos="zoom-in">
             <h1 className="text-title text-center text-white">About Us</h1>
             <div className="d-block mx-auto">
               <p className="text-caption text-center about-text">
@@ -361,18 +235,138 @@ export default function Landing({ data }: HomeProps) {
           </div>
           <div className="grid-padding text-center">
             <div className="row">
-              <div className="col-lg-6 column">
-                <DisplayServer data={data} />
+              <div className="col-lg-6 column" data-aos="fade-zoom-in">
+                <div className="text-start">
+                  <style jsx>
+                    {`
+                      table:hover {
+                        cursor: pointer;
+                      }
+
+                      table {
+                        width: 100%;
+                        margin: auto;
+                      }
+
+                      .responsive-table {
+                        display: block;
+                        height: 400px;
+                        max-width: 100%;
+                        overflow: auto;
+                        white-space: nowrap;
+                      }
+
+                      tr:hover {
+                        color: #ccc;
+                      }
+                    `}
+                  </style>
+                  <div className="responsive-table">
+                    <table
+                      className="table table-responsive text-white"
+                      style={{ backgroundColor: "#141432" }}
+                    >
+                      <tbody>
+                        {data === null ? (
+                          <tr>
+                            <td>
+                              <Skeleton count={5} height={32} duration={5} />
+                            </td>
+                          </tr>
+                        ) : (
+                          <>
+                            <tr>
+                              <td>Status</td>
+                              <td>
+                                {data === null ? (
+                                  <b className="text-danger">OFF</b>
+                                ) : (
+                                  <b className="text-success">ON</b>
+                                )}
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>Hostname</td>
+                              <td>
+                                {data.hostname || <Skeleton duration={5} />}
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>IP</td>
+                              <td>
+                                {`samp.relivedrp.com atau ${data.address}` || (
+                                  <Skeleton duration={5} />
+                                )}
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>Players</td>
+                              <td>
+                                {data ? (
+                                  `${data.online} / ${data.maxplayers}`
+                                ) : (
+                                  <Skeleton duration={5} />
+                                )}
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>Gamemode</td>
+                              <td>
+                                {data.gamemode || <Skeleton duration={5} />}
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>Mapname</td>
+                              <td>
+                                {data.mapname || <Skeleton duration={5} />}
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>Version</td>
+                              <td>
+                                {data.rules.version || (
+                                  <Skeleton duration={5} />
+                                )}
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>Weburl</td>
+                              <td>
+                                {data.rules.weburl || <Skeleton duration={5} />}
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>Weather</td>
+                              <td>
+                                {data.rules.weather || (
+                                  <Skeleton duration={5} />
+                                )}
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>Worldtime</td>
+                              <td>
+                                {data.rules.worldtime || (
+                                  <Skeleton duration={5} />
+                                )}
+                              </td>
+                            </tr>
+                          </>
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
                 <h3 className="icon-title text-white mt-3">
                   Server Statistics
                 </h3>
                 <p className="icon-caption">
-                  This can easily help you to
+                  Ini dapat dengan mudah membantu Anda untuk
                   <br />
-                  see server statistics
+                  melihat status server kami
                 </p>
               </div>
-              <div className="col-lg-6 column">
+              <div className="col-lg-6 column" data-aos="fade-zoom-in">
                 <div className="d-flex align-items-center justify-content-center">
                   <iframe
                     src="https://discord.com/widget?id=914691384345239592&theme=dark"
@@ -384,15 +378,420 @@ export default function Landing({ data }: HomeProps) {
                 </div>
                 <h3 className="icon-title text-white mt-3">Discord Status</h3>
                 <p className="icon-caption">
-                  This can easily help you to
+                  Ini dapat dengan mudah membantu Anda untuk
                   <br />
-                  see the status of Relived Discord Server
+                  melihat status Discord Server kami
                 </p>
               </div>
             </div>
           </div>
         </div>
       </section>
+      {/* About end */}
+      {/* Features */}
+      <section
+        className="h-100 w-100"
+        style={{ boxSizing: "border-box", backgroundColor: "#141432" }}
+        id="features"
+      >
+        <div
+          className="content-2-3 container-xxl mx-auto p-0 position-relative"
+          style={{ fontFamily: '"Poppins", sans-serif' }}
+        >
+          <div className="title-text" data-aos="zoom-in">
+            <h1 className="text-title text-center text-white">Features</h1>
+            <div className="d-block mx-auto">
+              <p className="text-caption text-center about-text">
+                Relived Roleplay memiliki beberapa fitur yang dapat memberikan
+                permainan yang lebih menarik.
+              </p>
+            </div>
+          </div>
+
+          <div className="grid-padding text-center">
+            <div className="row">
+              <div className="col-lg-6 column text-white" data-aos="zoom-in-up">
+                <Image
+                  src={`${PUBLIC_URL}/images/features/gallery1.jpg`}
+                  height="250"
+                  width="500"
+                  className="img-thumbnail border border-1"
+                  quality="100"
+                  alt="Bus Sidejob"
+                />
+                <h3 className="icon-title text-white mt-3">Bus Sidejob</h3>
+                <p className="icon-caption">
+                  Bus Sidejob adalah pekerjaan menjadi seorang supir bus.
+                  <br />
+                  Rute perjalanan bus diacak secara random.
+                </p>
+              </div>
+              <div className="col-lg-6 column text-white" data-aos="zoom-in-up">
+                <Image
+                  src={`${PUBLIC_URL}/images/features/gallery2.jpg`}
+                  height="250"
+                  width="500"
+                  className="img-thumbnail border border-1"
+                  quality="100"
+                  alt="Fish Factory"
+                />
+                <h3 className="icon-title text-white mt-3">Fishing</h3>
+                <p className="icon-caption">
+                  Fishing adalah pekerjaan sampingan atau aktifitas memancing,
+                  <br />
+                  Anda dapat memancing di Santa Maria Beach dan juga Pelabuhan
+                  Pier. Pendapatan sesuai dengan hasil pancing mu.
+                </p>
+              </div>
+            </div>
+            <div className="row">
+              <div className="col-lg-6 column text-white" data-aos="zoom-in-up">
+                <Image
+                  src={`${PUBLIC_URL}/images/features/gallery3.jpg`}
+                  height="250"
+                  width="500"
+                  className="img-thumbnail border border-1"
+                  quality="100"
+                  alt="Mechanic Center"
+                />
+                <h3 className="icon-title text-white mt-3">Mechanic Job</h3>
+                <p className="icon-caption">
+                  Mechanic Job adalah pekerjaan menjadi montir yang bekerja
+                  memperbaiki kendaraan
+                  <br />
+                  dan juga Anda dapat memodifikasi kendaraan di Bengkel Pribadi
+                  Anda
+                </p>
+              </div>
+              <div className="col-lg-6 column text-white" data-aos="zoom-in-up">
+                <Image
+                  src={`${PUBLIC_URL}/images/features/gallery4.jpg`}
+                  height="250"
+                  width="500"
+                  className="img-thumbnail border border-1"
+                  quality="100"
+                  alt="Trashmaster"
+                />
+                <h3 className="icon-title text-white mt-3">
+                  Trashmaster Sidejob
+                </h3>
+                <p className="icon-caption">
+                  Trashmaster Sidejob adalah pekerjaan sampingan menjadi seorang
+                  pemungut sampah menggunakan mobil khusus pada tempat sampah
+                  yang ada di Kota Los Santos.
+                  <br />
+                  Pendapatan pekerjaan ini sesuai dengan hasil sampah yang kamu
+                  ambil.
+                </p>
+              </div>
+            </div>
+            <div className="row">
+              <div className="col-lg-6 column text-white" data-aos="zoom-in-up">
+                <Image
+                  src={`${PUBLIC_URL}/images/features/gallery5.jpg`}
+                  height="250"
+                  width="500"
+                  className="img-thumbnail border border-1"
+                  quality="100"
+                  alt="Farmer"
+                />
+                <h3 className="icon-title text-white mt-3">Farmer Job</h3>
+                <p className="icon-caption">
+                  Farmer adalah pekerjaan menjadi seorang petani yang bekerja
+                  menanam bibit-bibit yang telah dibeli.
+                  <br />
+                  Anda dapat menjual hasil panen di Flint County
+                </p>
+              </div>
+              <div className="col-lg-6 column text-white" data-aos="zoom-in-up">
+                <Image
+                  src={`${PUBLIC_URL}/images/features/gallery6.jpg`}
+                  height="250"
+                  width="500"
+                  className="img-thumbnail border border-1"
+                  quality="100"
+                  alt="Cargo Unloader"
+                />
+                <h3 className="icon-title text-white mt-3">
+                  Cargo Unloader Sidejob
+                </h3>
+                <p className="icon-caption">
+                  Cargo Unloader adalah pekerjaan sampingan menjadi seorang
+                  pengangkut barang yang di dalam box menggunakan Forklift.
+                  <br />
+                  Pekerjaan ini berada di Blueberry Acres.
+                </p>
+              </div>
+            </div>
+            <div className="row">
+              <div className="col-lg-6 column text-white" data-aos="zoom-in-up">
+                <Image
+                  src={`${PUBLIC_URL}/images/features/gallery7.jpg`}
+                  height="250"
+                  width="500"
+                  className="img-thumbnail border border-1"
+                  quality="100"
+                  alt="Package Sorter"
+                />
+                <h3 className="icon-title text-white mt-3">
+                  Package Sorter Sidejob
+                </h3>
+                <p className="icon-caption">
+                  Package Sorter adalah pekerjaan sampingan menjadi seorang
+                  pengangkut box lalu mengantarkannya ke point yang sudah
+                  disediakan.
+                  <br />
+                  Pekerjaan ini berada di Flint County.
+                </p>
+              </div>
+              <div className="col-lg-6 column text-white" data-aos="zoom-in-up">
+                <Image
+                  src={`${PUBLIC_URL}/images/features/gallery8.jpg`}
+                  height="250"
+                  width="500"
+                  className="img-thumbnail border border-1"
+                  quality="100"
+                  alt="Sweeper"
+                />
+                <h3 className="icon-title text-white mt-3">Sweeper Sidejob</h3>
+                <p className="icon-caption">
+                  Sweeper adalah pekerjaan sampingan menjadi seorang pembersih
+                  jalanan Kota Los Santos menggunakan mobil khusus.
+                  <br />
+                  Pekerjaan ini berada di Commerce.
+                </p>
+              </div>
+            </div>
+
+            <p
+              className="icon-caption text-white text-center mt-4"
+              data-aos="zoom-in-up"
+            >
+              Masih banyak lagi fitur yang ada di server kami, penasaran?
+              <br />
+              Langsung saja daftarkan akunmu di Discord kami 😊.
+            </p>
+          </div>
+        </div>
+      </section>
+      {/* Features End */}
+      {/* Changelog */}
+      <section
+        className="h-100 w-100"
+        style={{ boxSizing: "border-box", backgroundColor: "#141432" }}
+        id="changelog"
+      >
+        <div
+          className="content-2-3 container-xxl mx-auto p-0 position-relative"
+          style={{ fontFamily: '"Poppins", sans-serif' }}
+        >
+          <div className="title-text" data-aos="zoom-in">
+            <h1 className="text-title text-center text-white">Changelog</h1>
+            <div className="d-block mx-auto">
+              <p className="text-caption text-center about-text">
+                Berikut adalah daftar perubahan yang telah kami lakukan
+                terakhir. Anda dapat melihat perubahan terbaru di Discord kami.
+              </p>
+            </div>
+          </div>
+
+          <div className="grid-padding text-center text-white">
+            <div className="card" data-aos="zoom-in-up">
+              <div className="d-flex align-items-center justify-content-between mb-3">
+                <h3 className="fs-4 text-white">
+                  <span className="badge bg-success">{changelog.version}</span>
+                </h3>
+                <small>
+                  Terakhir update: <strong>{changelog.date}</strong>
+                </small>
+              </div>
+              <div className="row text-start">
+                <div className="col-lg-4">
+                  <div className="text-center">
+                    <p className="lead">Added</p>
+                  </div>
+                  <p className="card-caption">
+                    {changelog.added.map((text, no) => {
+                      return (
+                        <span
+                          key={no}
+                          dangerouslySetInnerHTML={{
+                            __html: `${no + 1}. ${text.text} <br />`,
+                          }}
+                        ></span>
+                      );
+                    })}
+                  </p>
+                </div>
+                <div className="col-lg-4 mt-3">
+                  <div className="text-center">
+                    <p className="lead">Changes</p>
+                  </div>
+                  <p className="card-caption">
+                    {changelog.changes.map((text, no) => {
+                      return (
+                        <span
+                          key={no}
+                          dangerouslySetInnerHTML={{
+                            __html: `${no + 1}. ${text.text} <br />`,
+                          }}
+                        ></span>
+                      );
+                    })}
+                  </p>
+                </div>
+                <div className="col-lg-4 mt-3">
+                  <div className="text-center">
+                    <p className="lead">Bug Fixes</p>
+                  </div>
+                  <p className="card-caption">
+                    {changelog.fixes.map((text, no) => {
+                      return (
+                        <span
+                          key={no}
+                          dangerouslySetInnerHTML={{
+                            __html: `${no + 1}. ${text.text} <br />`,
+                          }}
+                        ></span>
+                      );
+                    })}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      {/* Changelog End */}
+      {/* Contact */}
+      <section
+        className="h-100 w-100"
+        style={{ boxSizing: "border-box", backgroundColor: "#141432" }}
+        id="contact"
+      >
+        <div
+          className="content-2-3 container-xxl mx-auto p-0 position-relative"
+          style={{ fontFamily: '"Poppins", sans-serif' }}
+        >
+          <div className="title-text" data-aos="zoom-in">
+            <h1 className="text-title text-center text-white">Contact</h1>
+            <div className="d-block mx-auto">
+              <p className="text-caption text-center about-text">
+                Jika Anda butuh bantuan jangan ragu untuk menghubungi kami
+                melalui form di bawah ini
+              </p>
+            </div>
+          </div>
+
+          <div className="card-block text-white" style={{ marginTop: "-3rem" }}>
+            <div
+              className="card mx-auto"
+              data-aos="zoom-in-up"
+              style={{ width: "80%" }}
+            >
+              <div className="d-flex flex-column align-items-start">
+                <form
+                  className="w-100"
+                  action="https://formspree.io/f/mnqwbyez"
+                  method="POST"
+                  onSubmit={handleSubmit}
+                >
+                  <div style={{ width: "100%" }}>
+                    <label htmlFor="name" className="d-block input-label">
+                      Nama
+                    </label>
+                    <div className="d-flex w-100 div-input">
+                      <svg
+                        className="icon"
+                        style={{ marginRight: "1rem" }}
+                        xmlns="http://www.w3.org/2000/svg"
+                        width={20}
+                        height={20}
+                        fill="none"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          clipRule="evenodd"
+                          d="M19 7.001c0 3.865-3.134 7-7 7s-7-3.135-7-7c0-3.867 3.134-7.001 7-7.001s7 3.134 7 7.001zm-1.598 7.18c-1.506 1.137-3.374 1.82-5.402 1.82-2.03 0-3.899-.685-5.407-1.822-4.072 1.793-6.593 7.376-6.593 9.821h24c0-2.423-2.6-8.006-6.598-9.819z"
+                          fill="#4E4B62"
+                        />
+                      </svg>
+                      <input
+                        className="input-field"
+                        type="text"
+                        name="name"
+                        id="name"
+                        placeholder="Nama kamu"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div style={{ marginTop: "1rem", width: "100%" }}>
+                    <label htmlFor="email" className="d-block input-label">
+                      Email
+                    </label>
+                    <div className="d-flex w-100 div-input">
+                      <svg
+                        className="icon"
+                        style={{ marginRight: "1rem" }}
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          clipRule="evenodd"
+                          d="M5 5C3.34315 5 2 6.34315 2 8V16C2 17.6569 3.34315 19 5 19H19C20.6569 19 22 17.6569 22 16V8C22 6.34315 20.6569 5 19 5H5ZM5.49607 7.13174C5.01655 6.85773 4.40569 7.02433 4.13168 7.50385C3.85767 7.98337 4.02427 8.59422 4.50379 8.86823L11.5038 12.8682C11.8112 13.0439 12.1886 13.0439 12.4961 12.8682L19.4961 8.86823C19.9756 8.59422 20.1422 7.98337 19.8682 7.50385C19.5942 7.02433 18.9833 6.85773 18.5038 7.13174L11.9999 10.8482L5.49607 7.13174Z"
+                          fill="#4E4B62"
+                        />
+                      </svg>
+                      <input
+                        className="input-field"
+                        type="email"
+                        name="email"
+                        id="email"
+                        placeholder="Email kamu"
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div style={{ marginTop: "1rem", width: "100%" }}>
+                    <label htmlFor="pesan" className="d-block input-label">
+                      Pesan
+                    </label>
+                    <div className="d-flex w-100 div-input">
+                      <textarea
+                        name="pesan"
+                        id="pesan"
+                        cols={30}
+                        rows={10}
+                        className="input-field"
+                        placeholder="Pesan kamu"
+                        required
+                      ></textarea>
+                    </div>
+                  </div>
+                  <div className="mt-4 ms-2 content-3-6">
+                    <button
+                      className="btn btn-fill text-white border-0"
+                      style={{ width: "10rem" }}
+                      type="submit"
+                    >
+                      Kirim
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      {/* Contact End */}
+      {/* Footer */}
       <section
         className="h-100 w-100"
         style={{ boxSizing: "border-box", backgroundColor: "#141432" }}
@@ -401,97 +800,8 @@ export default function Landing({ data }: HomeProps) {
           className="footer-2-3 container-xxl mx-auto position-relative p-0"
           style={{ fontFamily: '"Poppins", sans-serif' }}
         >
-          <div className="list-footer">
-            <div className="row gap-md-0 gap-3">
-              <div className="col-lg-4 col-md-12">
-                <div className="">
-                  <div className="list-space">
-                    <Image
-                      src={`${PUBLIC_URL}/images/logo.png`}
-                      quality={100}
-                      alt="Logo"
-                      height={40}
-                      width={40}
-                    />
-                  </div>
-                  <nav className="list-unstyled">
-                    <li className="list-space">
-                      <a href="#" className="list-menu">
-                        Home
-                      </a>
-                    </li>
-                    <li className="list-space">
-                      <a href="#about" className="list-menu">
-                        About Us
-                      </a>
-                    </li>
-                    <li className="list-space">
-                      <a href="#features" className="list-menu">
-                        Features
-                      </a>
-                    </li>
-                    <li className="list-space">
-                      <a href="#changelog" className="list-menu">
-                        Changelog
-                      </a>
-                    </li>
-                    <li className="list-space">
-                      <a href="#contact" className="list-menu">
-                        Contact
-                      </a>
-                    </li>
-                  </nav>
-                </div>
-              </div>
-              <div className="col-lg-4 col-md-12">
-                <h2 className="footer-text-title text-white">Company</h2>
-                <nav className="list-unstyled">
-                  <li className="list-space">
-                    <a href="" className="list-menu">
-                      Contact Us
-                    </a>
-                  </li>
-                  <li className="list-space">
-                    <a href="" className="list-menu">
-                      Blog
-                    </a>
-                  </li>
-                  <li className="list-space">
-                    <a href="" className="list-menu">
-                      Culture
-                    </a>
-                  </li>
-                  <li className="list-space">
-                    <a href="" className="list-menu">
-                      Security
-                    </a>
-                  </li>
-                </nav>
-              </div>
-              <div className="col-lg-4 col-md-12">
-                <h2 className="footer-text-title text-white">Support</h2>
-                <nav className="list-unstyled">
-                  <li className="list-space">
-                    <a href="" className="list-menu">
-                      Getting Started
-                    </a>
-                  </li>
-                  <li className="list-space">
-                    <a href="" className="list-menu">
-                      Help Center
-                    </a>
-                  </li>
-                  <li className="list-space">
-                    <a href="" className="list-menu">
-                      Server Status
-                    </a>
-                  </li>
-                </nav>
-              </div>
-            </div>
-          </div>
           <div className="border-color info-footer">
-            <div className="">
+            <div>
               <hr className="hr" />
             </div>
             <div className="mx-auto d-flex flex-column flex-lg-row align-items-center justify-content-lg-between justify-content-md-center justify-content-sm-center footer-info-space gap-4">
@@ -573,6 +883,7 @@ export default function Landing({ data }: HomeProps) {
             </div>
           </div>
         </div>
+        {/* Footer end */}
       </section>
     </>
   );

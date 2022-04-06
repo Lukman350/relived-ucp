@@ -11,22 +11,14 @@ import {
   API_HOST,
 } from "../../../../components/Utils";
 import Cookies from "js-cookie";
+import { VehicleProps } from "@/data-types";
 
-export default function Vehicle({ id }) {
-  const [account, setAccount] = useState({});
-  const [error, setError] = useState(undefined);
-  const [vehicle, setVehicle] = useState();
+export default function Vehicle({ account, id }: VehicleProps) {
+  const [error, setError] = useState<string>("");
 
   useEffect(() => {
     const fetchData = async () => {
-      const tokenCookies = Cookies.get("token");
-      if (tokenCookies) {
-        setAccount(getAccount(tokenCookies));
-      }
-
-      if (id.success) {
-        setVehicle(id);
-      } else {
+      if (id.success === false) {
         setError(id.error);
       }
     };
@@ -50,11 +42,13 @@ export default function Vehicle({ id }) {
           style={{ fontFamily: '"Poppins", sans-serif' }}
         >
           {!error ? (
-            <DisplayVehicle vehicle={vehicle} />
+            <DisplayVehicle vehicle={id} />
           ) : (
             <div
               className="d-flex flex-column align-items-center"
               style={{ height: "73vh" }}
+              data-aos="zoom-in"
+              data-aos-once="true"
             >
               <h3>
                 <span role="img" aria-label="Sad Face">
@@ -72,7 +66,18 @@ export default function Vehicle({ id }) {
   );
 }
 
-export async function getServerSideProps({ req, params }) {
+interface GetServerSideProps {
+  req: {
+    cookies: {
+      token: string;
+    };
+  };
+  params: {
+    id: string;
+  };
+}
+
+export async function getServerSideProps({ req, params }: GetServerSideProps) {
   const { token } = req.cookies;
 
   if (!token) {
@@ -96,24 +101,28 @@ export async function getServerSideProps({ req, params }) {
 
   const { id } = params;
 
-  if (id < 1) {
+  if (parseInt(id) < 1) {
     return {
       props: {
         id: {
           success: false,
           error: "Invalid owner",
+          data: null,
         },
       },
     };
   } else {
+    const account = await getAccount(token);
+
     const response = await callAPI({
       url: `${API_HOST}/char/vehicle/${id}`,
       method: "GET",
-      token: true,
+      token,
     });
 
     return {
       props: {
+        account,
         id: response,
       },
     };

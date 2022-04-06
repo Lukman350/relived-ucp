@@ -1,8 +1,9 @@
 import { connection } from "@/database";
-import type { ApiResponseData } from "@/data-types";
+import { ApiResponseData } from "@/data-types";
 import type { NextApiRequest, NextApiResponse } from "next";
+import authenticate from "@/services/auth";
 
-export default async function handler(
+export default authenticate(async function handler(
   req: NextApiRequest,
   res: NextApiResponse<ApiResponseData>
 ) {
@@ -15,7 +16,7 @@ export default async function handler(
         error: "Missing id",
         data: null,
       });
-      res.end();
+
       return;
     }
 
@@ -32,7 +33,7 @@ export default async function handler(
         error: "Character not found",
         data: null,
       });
-      res.end();
+
       return;
     }
 
@@ -41,14 +42,19 @@ export default async function handler(
       data: char[0],
       error: null,
     });
-    res.end();
   } else {
     res.status(400).json({
       success: false,
       data: null,
       error: "Missing required fields",
     });
-    res.end();
+
     return;
   }
-}
+});
+
+export const config = {
+  api: {
+    externalResolver: true,
+  },
+};

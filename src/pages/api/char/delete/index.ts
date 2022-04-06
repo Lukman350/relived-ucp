@@ -2,6 +2,7 @@ import { connection } from "@/database";
 import type { ApiResponseData, JWTPayloadTypes, UserTypes } from "@/data-types";
 import type { NextApiRequest, NextApiResponse } from "next";
 import jwtDecode from "jwt-decode";
+import authenticate from "@/services/auth";
 
 const deleteInventory = (id: number) => {
   return new Promise((resolve, reject) => {
@@ -95,7 +96,7 @@ const deleteTickets = (id: number) => {
   });
 };
 
-export default async function handler(
+export default authenticate(async function handler(
   req: NextApiRequest,
   res: NextApiResponse<ApiResponseData>
 ) {
@@ -113,7 +114,7 @@ export default async function handler(
         data: null,
         error: "Missing required fields",
       });
-      res.end();
+
       return;
     }
 
@@ -130,7 +131,7 @@ export default async function handler(
         data: null,
         error: "Character not found",
       });
-      res.end();
+
       return;
     }
 
@@ -140,7 +141,7 @@ export default async function handler(
         data: null,
         error: "You do not have permission to delete this character",
       });
-      res.end();
+
       return;
     }
 
@@ -154,7 +155,7 @@ export default async function handler(
         data: null,
         error: "User not found",
       });
-      res.end();
+
       return;
     }
 
@@ -174,7 +175,6 @@ export default async function handler(
           data: deleted,
           error: null,
         });
-        res.end();
       })
       .catch((err) => {
         res.status(500).json({
@@ -182,7 +182,6 @@ export default async function handler(
           data: null,
           error: err,
         });
-        res.end();
       });
   } else {
     res.status(400).json({
@@ -190,7 +189,13 @@ export default async function handler(
       data: null,
       error: "Wrong method",
     });
-    res.end();
+
     return;
   }
-}
+});
+
+export const config = {
+  api: {
+    externalResolver: true,
+  },
+};

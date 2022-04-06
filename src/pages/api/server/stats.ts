@@ -46,7 +46,6 @@ export default async function handler(
         },
         error: null,
       });
-      res.end();
     } catch (err: any) {
       res.status(400).json({
         success: false,
@@ -60,6 +59,11 @@ export default async function handler(
       data: null,
       error: "Invalid request method",
     });
-    res.end();
   }
 }
+
+export const config = {
+  api: {
+    externalResolver: true,
+  },
+};

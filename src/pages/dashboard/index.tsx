@@ -3,16 +3,29 @@ import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import Players from "@/components/ServerStats";
 import ServerStatistic from "@/components/ServerStats/stats";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/router";
 import { API_HOST, getAccount, isTokenValid } from "@/components/Utils";
 import Cookies from "js-cookie";
 import callAPI from "@/config/api";
 import { DashboardIndexProps } from "@/data-types";
 
-export default function Index({
-  account,
-  players,
-  stats,
-}: DashboardIndexProps) {
+export default function Index({ players, stats }: DashboardIndexProps) {
+  const [account, setAccount] = useState<any>();
+
+  const router = useRouter();
+
+  useEffect(() => {
+    const token: string = Cookies.get("token") || "";
+
+    if (isTokenValid(token)) {
+      setAccount(getAccount(token));
+    } else {
+      Cookies.remove("token");
+      router.push("/login");
+    }
+  }, [router]);
+
   return (
     <Layout title="Relived - Dashboard Page">
       <Navbar account={account} />
@@ -46,52 +59,22 @@ export default function Index({
   );
 }
 
-interface GetServerSideProps {
-  req: {
-    cookies: {
-      token: string;
-    };
-  };
-}
-
-export async function getServerSideProps({ req }: GetServerSideProps) {
-  const { token } = req.cookies;
-
-  if (!token) {
-    return {
-      redirect: {
-        destination: "/login",
-        permanent: false,
-      },
-    };
-  } else {
-    if (!isTokenValid(token)) {
-      Cookies.remove("token");
-      return {
-        redirect: {
-          destination: "/login",
-          permanent: false,
-        },
-      };
-    }
-  }
+export async function getStaticProps() {
   const players = await callAPI({
     url: `${API_HOST}/server/players`,
     method: "GET",
-    token: true,
   });
 
   const stats = await callAPI({
     url: `${API_HOST}/server/stats`,
     method: "GET",
-    token: true,
   });
 
   return {
     props: {
-      account: getAccount(token),
       players: players.data,
       stats: stats.data,
     },
+    revalidate: 10,
   };
 }

@@ -13,8 +13,8 @@ import callAPI from "@/config/api";
 import Toast from "@/components/Toast";
 
 export default function Forgot() {
-  const [ucp, setUCP] = useState("");
-  const [email, setEmail] = useState("");
+  const [ucp, setUCP] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
 
   const resetPassword = async (e: any) => {
     setDisabled(e.target, true);
@@ -62,7 +62,10 @@ export default function Forgot() {
           className="content-3-6 d-flex flex-column align-items-center h-100 flex-lg-row"
           style={{ fontFamily: '"Poppins", sans-serif' }}
         >
-          <div className="position-relative d-none d-lg-flex flex-column justify-content-center align-items-center width-left">
+          <div
+            className="position-relative d-none d-lg-flex flex-column justify-content-center align-items-center width-left"
+            data-aos="zoom-in"
+          >
             <Image
               className="img-fluid"
               src={`${PUBLIC_URL}/images/forgot-hero.svg`}
@@ -72,7 +75,10 @@ export default function Forgot() {
               height={300}
             />
           </div>
-          <div className="d-flex mx-auto align-items-left justify-content-left width-right mx-lg-0">
+          <div
+            className="d-flex mx-auto align-items-left justify-content-left width-right mx-lg-0"
+            data-aos="zoom-in-up"
+          >
             <div className="right mx-lg-0 mx-auto">
               <div className="align-items-center justify-content-center d-lg-none d-flex">
                 <Image
@@ -81,6 +87,7 @@ export default function Forgot() {
                   alt="Login Hero"
                   width={351.75}
                   height={300.58}
+                  data-aos="zoom-in"
                 />
               </div>
               <h3 className="title-text">Forgot Page</h3>

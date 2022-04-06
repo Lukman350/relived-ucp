@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { connection } from "@/database";
 import sendEmail from "@/config/email";
 import { PUBLIC_URL } from "@/components/Utils";
-import type { ApiResponseData } from "@/data-types";
+import { ApiResponseData } from "@/data-types";
 
 const randomToken = (length: number) => {
   let result: string = "";
@@ -59,7 +59,6 @@ export default async function handler(
         error: "Missing required fields",
         data: null,
       });
-      res.end();
 
       return;
     }
@@ -77,7 +76,6 @@ export default async function handler(
         error: "Invalid username or email",
         data: null,
       });
-      res.end();
 
       return;
     }
@@ -140,14 +138,12 @@ export default async function handler(
                   error: "Email sent",
                   data: null,
                 });
-                res.end();
               } else {
                 res.status(500).json({
                   success: false,
                   error: "Failed to update token",
                   data: null,
                 });
-                res.end();
               }
             })
             .catch((err) => {
@@ -156,7 +152,6 @@ export default async function handler(
                 error: err,
                 data: null,
               });
-              res.end();
             });
         })
         .catch((err) => {
@@ -165,7 +160,6 @@ export default async function handler(
             error: err,
             data: null,
           });
-          res.end();
         });
     } else {
       await sendEmail(email, "RRP - Password Reset", html)
@@ -178,7 +172,6 @@ export default async function handler(
               error: "Failed to create forgot request",
               data: null,
             });
-            res.end();
 
             return;
           }
@@ -188,7 +181,6 @@ export default async function handler(
             error: "Email sent",
             data: null,
           });
-          res.end();
         })
         .catch((err) => {
           res.status(500).json({
@@ -196,11 +188,15 @@ export default async function handler(
             error: err,
             data: null,
           });
-          res.end();
         });
     }
   } else {
     res.status(404);
-    res.end();
   }
 }
+
+export const config = {
+  api: {
+    externalResolver: true,
+  },
+};

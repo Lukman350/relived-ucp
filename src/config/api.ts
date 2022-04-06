@@ -1,8 +1,7 @@
 import axios, { AxiosRequestConfig } from "axios";
-import Cookies from "js-cookie";
 
 interface CallAPIProps extends AxiosRequestConfig {
-  token?: boolean;
+  token?: string;
   serverToken?: string;
 }
 
@@ -20,13 +19,9 @@ export default async function callAPI({
       Authorization: `Bearer ${serverToken}`,
     };
   } else if (token) {
-    const tokenCookies = Cookies.get("token");
-
-    if (tokenCookies) {
-      headers = {
-        Authorization: `Bearer ${tokenCookies}`,
-      };
-    }
+    headers = {
+      Authorization: `Bearer ${token}`,
+    };
   }
 
   const response = await axios({
@@ -36,22 +31,31 @@ export default async function callAPI({
     headers,
   }).catch((error) => error.response);
 
-  if (response.status > 300) {
+  if (response !== undefined) {
+    if (response.status > 300) {
+      const res = {
+        success: false,
+        error: response.data.error,
+        data: null,
+      };
+      return res;
+    }
+
+    const { length } = Object.keys(response.data);
+
+    const res = {
+      success: true,
+      error: null,
+      data: response.data.data,
+    };
+
+    return res;
+  } else {
     const res = {
       success: false,
-      error: response.data.error,
+      error: response,
       data: null,
     };
     return res;
   }
-
-  const { length } = Object.keys(response.data);
-
-  const res = {
-    success: true,
-    error: null,
-    data: response.data.data,
-  };
-
-  return res;
 }

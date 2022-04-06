@@ -393,7 +393,26 @@ export const setDisabled = (button: any, value: boolean) => {
   button.disabled = value;
 };
 
+export const getAdminLevel = (level: number) => {
+  const AdminRanks: Array<string> = [
+    "No",
+    "Helper",
+    "Admin Level 1",
+    "Admin Level 2",
+    "Admin Level 3",
+    "Admin Level 4",
+    "Sr. Admin",
+    "Lead Admin",
+    "Deputy Head Admin",
+    "Head Admin",
+  ];
+
+  return AdminRanks[level];
+};
+
 export const API_HOST = process.env.NEXT_PUBLIC_API;
 export const PUBLIC_URL = process.env.NEXT_PUBLIC_URL;
 export const USER_EMAIL = process.env.NEXT_PUBLIC_USER_EMAIL;
 export const USER_PASSWORD = process.env.NEXT_PUBLIC_USER_PASSWORD;
+export const jwtSecret: string =
+  process.env.JWT_TOKEN || "X3TsehNIkXwY4cbsB0JZtiYfPtch08G8zlmfowSwxqCFZ4HS8H";
