@@ -96,6 +96,7 @@ export default function Settings({ account }: SettingsProps) {
           curEmail,
           newEmail,
         },
+        token
       });
 
       if (res.success) {
